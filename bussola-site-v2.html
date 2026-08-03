@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bússola — Gestão Clínica para Psicólogos</title>
+<meta name="description" content="Bússola integra agenda e financeiro para psicólogos autônomos. Menos tempo em admin. Mais tempo atendendo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ─── Tokens ─────────────────────────────────────────────── */
+:root {
+  --bg:            #F8F7F4;
+  --bg-soft:       #F0EEE9;
+  --ink:           #111110;
+  --ink-dark:      #0E1117;
+  --muted:         #6B7280;
+  --line:          rgba(17,17,16,.1);
+  --line-dark:     rgba(255,255,255,.08);
+  --brand:         #2B4D6F;
+  --brand-mid:     #3A6491;
+  --sage:          #3D7A6B;
+  --sage-mid:      #4D8F7E;
+  --sage-light:    #5EAA99;
+  --on-dark:       #E8E4DC;
+  --on-dark-muted: rgba(232,228,220,.5);
+  --white:         #FFFFFF;
+  --serif:         'DM Serif Display', serif;
+  --sans:          'Inter', system-ui, sans-serif;
+  --r:             8px;
+  --max:           1160px;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a  { color: inherit; text-decoration: none; }
+
+.shell {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 60px);
+}
+
+/* ─── Nav ────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  transition: background .35s, border-color .35s;
+}
+nav.is-light {
+  background: rgba(248,247,244,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+nav.is-dark {
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.wordmark {
+  font-family: var(--serif);
+  font-size: 20px;
+  letter-spacing: -.02em;
+  transition: color .3s;
+}
+nav.is-light .wordmark { color: var(--brand); }
+nav.is-dark  .wordmark { color: var(--on-dark); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a { font-size: 13.5px; font-weight: 500; transition: color .18s; }
+nav.is-light .nav-links a       { color: var(--muted); }
+nav.is-dark  .nav-links a       { color: var(--on-dark-muted); }
+nav.is-light .nav-links a:hover { color: var(--ink); }
+nav.is-dark  .nav-links a:hover { color: var(--on-dark); }
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background .18s;
+}
+nav.is-light .nav-cta       { background: var(--brand);     color: var(--white); }
+nav.is-dark  .nav-cta       { background: var(--sage);      color: var(--white); }
+nav.is-light .nav-cta:hover { background: var(--brand-mid); }
+nav.is-dark  .nav-cta:hover { background: var(--sage-mid);  }
+
+/* ─── Buttons ────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--r);
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: background .18s, border-color .18s, color .18s, transform .14s;
+}
+.btn:hover { transform: translateY(-1px); }
+
+.btn-sage        { background: var(--sage);      color: var(--white); }
+.btn-sage:hover  { background: var(--sage-mid); }
+.btn-brand       { background: var(--brand);     color: var(--white); }
+.btn-brand:hover { background: var(--brand-mid); }
+
+.btn-ghost-dark {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.16);
+  color: var(--on-dark-muted);
+}
+.btn-ghost-dark:hover { border-color: rgba(255,255,255,.38); color: var(--on-dark); }
+
+.btn-ghost-light {
+  background: transparent;
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+}
+.btn-ghost-light:hover { border-color: var(--brand); color: var(--brand); }
+
+/* ─── Hero ───────────────────────────────────────────────── */
+.hero {
+  background: var(--ink-dark);
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+  padding-top: 80px;
+  padding-bottom: clamp(56px, 6vw, 80px);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 39px,
+    rgba(255,255,255,.018) 39px,
+    rgba(255,255,255,.018) 40px
+  );
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(ellipse at center,
+    rgba(61,122,107,.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: clamp(20px, 5vw, 60px);
+  padding-right: 32px;
+  max-width: 620px;
+  margin-left: auto;
+}
+
+.hero-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sage-light);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(34px, 4.5vw, 66px);
+  line-height: 1.08;
+  letter-spacing: -.03em;
+  color: var(--on-dark);
+  margin-bottom: 22px;
+}
+.hero h1 em { font-style: italic; color: var(--sage-light); }
+
+.hero-sub {
+  max-width: 440px;
+  font-size: clamp(14.5px, 1.1vw, 16.5px);
+  color: var(--on-dark-muted);
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ─── App Preview (hero visual) ──────────────────────────── */
+.hero-visual {
+  position: relative;
+  z-index: 1;
+  padding: clamp(20px, 4vw, 48px);
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.app-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 10px;
+  padding: 18px 20px;
+  backdrop-filter: blur(4px);
+}
+
+.app-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(232,228,220,.38);
+  margin-bottom: 14px;
+}
+
+/* Agenda card */
+.session-list { display: flex; flex-direction: column; gap: 8px; }
+
+.session-row {
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.session-time {
+  color: rgba(232,228,220,.45);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.session-name { color: var(--on-dark); font-weight: 500; }
+.session-name.empty { color: rgba(232,228,220,.3); font-style: italic; }
+
+.session-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.session-badge.confirmed {
+  background: rgba(61,122,107,.2);
+  color: var(--sage-light);
+}
+.session-badge.available {
+  background: rgba(255,255,255,.06);
+  color: rgba(232,228,220,.38);
+}
+
+/* Financial card */
+.pkg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+.pkg-name { font-size: 13px; font-weight: 600; color: var(--on-dark); }
+.pkg-count { font-size: 12px; color: rgba(232,228,220,.45); }
+
+.pkg-bar-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(255,255,255,.1);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.pkg-bar-fill {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 3px;
+  width: 70%;
+}
+
+.pkg-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.pkg-row-label { color: rgba(232,228,220,.4); }
+.pkg-row-value { color: var(--on-dark); font-weight: 500; }
+
+/* ─── Section base ───────────────────────────────────────── */
+section { padding-block: clamp(72px, 8vw, 108px); }
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.eyebrow--light  { color: var(--sage); }
+.eyebrow--dark   { color: var(--sage-light); }
+.eyebrow--blue   { color: rgba(180,215,200,.58); }
+.eyebrow--center { justify-content: center; }
+
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.4vw, 48px);
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  margin-bottom: 18px;
+}
+.section-title--ink   { color: var(--ink); }
+.section-title--dark  { color: var(--on-dark); }
+.section-title--white { color: var(--white); }
+
+.section-lead {
+  font-size: clamp(14.5px, 1.1vw, 16.5px);
+  line-height: 1.65;
+  margin-bottom: 40px;
+  max-width: 560px;
+}
+.section-lead--muted { color: var(--muted); }
+.section-lead--dark  { color: var(--on-dark-muted); }
+.section-lead--white { color: rgba(255,255,255,.62); }
+
+/* ─── ICP / Para quem é ─────────────────────────────────── */
+.icp { background: var(--bg-soft); }
+
+.icp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.icp-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 24px;
+}
+.icp-card-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(61,122,107,.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.icp-card-icon svg { color: var(--sage); }
+.icp-card h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.icp-card p {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ─── Problem ────────────────────────────────────────────── */
+.problem { background: var(--bg); }
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(44px, 6vw, 88px);
+  align-items: start;
+}
+
+.problem-quote {
+  padding: 28px 30px;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--sage);
+  border-radius: 0 var(--r) var(--r) 0;
+}
+.problem-quote p {
+  font-family: var(--serif);
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.problem-quote cite {
+  font-size: 12.5px;
+  font-style: normal;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+
+.problem-list { display: flex; flex-direction: column; }
+
+.problem-item {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.problem-item:first-child { padding-top: 0; }
+.problem-item:last-child  { border-bottom: none; padding-bottom: 0; }
+
+.problem-item-num {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--sage);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.problem-item h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 5px;
+}
+.problem-item p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ─── Pillars ────────────────────────────────────────────── */
+.pillars { background: var(--brand); }
+.pillars-header { margin-bottom: 40px; }
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pillar {
+  padding: clamp(28px, 3.5vw, 44px);
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.pillar + .pillar { border-left: 1px solid rgba(255,255,255,.12); }
+
+.pillar-num {
+  font-family: var(--serif);
+  font-size: 48px;
+  color: rgba(255,255,255,.1);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.pillar h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.pillar p {
+  font-size: 13.5px;
+  color: rgba(255,255,255,.58);
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+.pillar-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 11px;
+  border-radius: 999px;
+  color: var(--sage-light);
+  background: rgba(61,122,107,.15);
+  letter-spacing: .04em;
+}
+
+/* ─── Product Preview ────────────────────────────────────── */
+.preview { background: var(--bg-soft); }
+
+.preview-intro {
+  max-width: 600px;
+  margin-bottom: 48px;
+}
+
+.browser-frame {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(17,17,16,.07);
+}
+
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.browser-dots {
+  display: flex;
+  gap: 6px;
+}
+.browser-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.browser-url {
+  font-size: 11.5px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px 12px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.browser-body {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  min-height: 360px;
+}
+
+/* Sidebar */
+.app-sidebar {
+  border-right: 1px solid var(--line);
+  padding: 16px 0;
+  background: var(--bg-soft);
+}
+
+.sidebar-brand {
+  padding: 4px 16px 16px;
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--brand);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  color: var(--muted);
+  cursor: default;
+}
+.sidebar-item.active {
+  background: rgba(43,77,111,.07);
+  color: var(--brand);
+  font-weight: 500;
+}
+.sidebar-item svg { flex-shrink: 0; }
+
+/* App main content */
+.app-main {
+  padding: 20px 24px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.app-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.app-week {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* Week grid */
+.week-grid {
+  display: grid;
+  grid-template-columns: 48px repeat(5, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.week-cell {
+  background: var(--bg);
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.week-day-header {
+  background: var(--bg-soft);
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.week-time {
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot {
+  background: var(--bg);
+  padding: 5px 6px;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.slot.confirmed {
+  background: rgba(61,122,107,.08);
+  border-left: 2px solid var(--sage);
+}
+.slot.available {
+  color: rgba(107,114,128,.45);
+}
+.slot-name {
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10.5px;
+}
+.slot-type {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* ─── Features ───────────────────────────────────────────── */
+.features { background: var(--bg); }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: clamp(44px, 6vw, 80px);
+  align-items: start;
+}
+
+.features-sticky { position: sticky; top: 80px; }
+
+.feature-list { display: flex; flex-direction: column; }
+
+.feature-item {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+.feature-item:first-child { padding-top: 0; }
+.feature-item:last-child  { border-bottom: none; padding-bottom: 0; }
+
+.feature-item h4 {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.feature-badge {
+  font-size: 10.5px;
+  font-weight: 500;
+  background: var(--bg-soft);
+  color: var(--muted);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.feature-item p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ─── Dados ──────────────────────────────────────────────── */
+.dados { background: var(--ink-dark); position: relative; overflow: hidden; }
+.dados::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(43,77,111,.2) 0%, transparent 55%);
+  pointer-events: none;
+}
+.dados-inner { position: relative; z-index: 1; }
+.dados-header { max-width: 560px; margin-bottom: 48px; }
+
+.dados-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dados-item {
+  padding: 22px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--r);
+}
+.dados-item h4 {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--on-dark);
+  margin-bottom: 6px;
+}
+.dados-item p {
+  font-size: 13.5px;
+  color: var(--on-dark-muted);
+  line-height: 1.6;
+}
+
+/* ─── CTA ────────────────────────────────────────────────── */
+.cta-section { background: var(--bg-soft); }
+
+.cta-box {
+  max-width: 600px;
+  margin-inline: auto;
+  text-align: center;
+}
+.cta-box .section-title { margin-inline: auto; }
+.cta-box .section-lead  { margin-inline: auto; }
+
+/* ─── Footer ─────────────────────────────────────────────── */
+footer { background: var(--ink-dark); padding-block: 32px; }
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-wordmark { font-family: var(--serif); font-size: 16px; color: rgba(232,228,220,.6); }
+.footer-note { font-size: 12.5px; color: rgba(232,228,220,.3); }
+
+/* ─── Reveal ─────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+  .hero-content { max-width: 100%; margin: 0; padding: 32px clamp(20px,5vw,60px) 0; }
+  .hero-visual { padding: 24px clamp(20px,5vw,60px) 40px; }
+  .browser-body { grid-template-columns: 160px 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .icp-grid { grid-template-columns: 1fr; }
+  .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .pillar + .pillar { border-left: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .features-sticky { position: static; }
+  .dados-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+  .browser-body { grid-template-columns: 1fr; }
+  .app-sidebar { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav" class="is-dark">
+  <div class="shell nav-inner">
+    <a class="wordmark" href="#">Bússola</a>
+    <ul class="nav-links">
+      <li><a href="#para-quem">Para quem</a></li>
+      <li><a href="#produto">Produto</a></li>
+      <li><a href="#dados">Seus dados</a></li>
+    </ul>
+    <a class="nav-cta" href="#lista-espera">Lista de espera</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-eyebrow">Bússola · Gestão clínica para psicólogos</span>
+    <h1>
+      Sua clínica <em>organizada.</em><br>
+      Sua prática <em>protegida.</em>
+    </h1>
+    <p class="hero-sub">
+      Agenda e financeiro integrados para psicólogos autônomos.
+      Menos tempo em admin. Mais tempo atendendo.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-sage" href="#lista-espera">
+        Quero acesso antecipado
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-ghost-dark" href="#produto">Ver o produto</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <!-- Agenda card -->
+    <div class="app-card">
+      <div class="app-card-label">Agenda · Segunda-feira</div>
+      <div class="session-list">
+        <div class="session-row">
+          <span class="session-time">09:00</span>
+          <span class="session-name">Ana C.</span>
+          <span class="session-badge confirmed">Confirmada</span>
+        </div>
+        <div class="session-row">
+          <span class="session-time">10:00</span>
+          <span class="session-name empty">Disponível</span>
+          <span class="session-badge available">Livre</span>
+        </div>
+        <div class="session-row">
+          <span class="session-time">11:00</span>
+          <span class="session-name">Pedro M.</span>
+          <span class="session-badge confirmed">Confirmada</span>
+        </div>
+        <div class="session-row">
+          <span class="session-time">14:00</span>
+          <span class="session-name">Laura S.</span>
+          <span class="session-badge confirmed">Confirmada</span>
+        </div>
+        <div class="session-row">
+          <span class="session-time">15:00</span>
+          <span class="session-name empty">Disponível</span>
+          <span class="session-badge available">Livre</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial card -->
+    <div class="app-card">
+      <div class="app-card-label">Pacote em andamento</div>
+      <div class="pkg-header">
+        <span class="pkg-name">João T. · 10 sessões</span>
+        <span class="pkg-count">7 de 10 realizadas</span>
+      </div>
+      <div class="pkg-bar-track">
+        <div class="pkg-bar-fill"></div>
+      </div>
+      <div class="pkg-row">
+        <span class="pkg-row-label">Valor restante</span>
+        <span class="pkg-row-value">R$ 600,00</span>
+      </div>
+      <div class="pkg-row" style="margin-top:6px;">
+        <span class="pkg-row-label">Próxima sessão</span>
+        <span class="pkg-row-value">05/08 às 10:00</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ICP -->
+<section class="icp" id="para-quem">
+  <div class="shell">
+    <p class="eyebrow eyebrow--light reveal">Para quem é</p>
+    <h2 class="section-title section-title--ink reveal" style="max-width:540px;">
+      Para o psicólogo que gerencia tudo sozinho.
+    </h2>
+    <p class="section-lead section-lead--muted reveal">
+      A Bússola foi pensada para o profissional autônomo com carteira recorrente
+      que usa ao menos duas ferramentas separadas para agenda, cobrança e organização.
+    </p>
+    <div class="icp-grid reveal">
+      <div class="icp-card">
+        <div class="icp-card-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="14" height="13" rx="2"/>
+            <path d="M6 3V1M12 3V1M2 7h14"/>
+          </svg>
+        </div>
+        <h4>15 a 60 pacientes ativos</h4>
+        <p>Volume suficiente para a gestão virar trabalho, mas sem equipe de apoio para dividir a carga.</p>
+      </div>
+      <div class="icp-card">
+        <div class="icp-card-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 2v4M9 12v4M2 9h4M12 9h4"/>
+            <circle cx="9" cy="9" r="3"/>
+          </svg>
+        </div>
+        <h4>Operação digital</h4>
+        <p>Atende online ou presencial, usa WhatsApp para comunicação e já experimenta ferramentas de gestão.</p>
+      </div>
+      <div class="icp-card">
+        <div class="icp-card-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l4 4 8-8"/>
+          </svg>
+        </div>
+        <h4>Quer menos admin</h4>
+        <p>Cansado de reconciliar agenda com financeiro no fim do mês e de perder tempo respondendo mensagens de agendamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problema">
+  <div class="shell">
+    <p class="eyebrow eyebrow--light reveal">O problema</p>
+    <div class="problem-grid">
+      <div>
+        <h2 class="section-title section-title--ink reveal">
+          "Não consigo confiar nos dados do sistema que tenho hoje."
+        </h2>
+        <div class="problem-quote reveal">
+          <p>
+            "Fim de mês virou trabalho de contador. Fico conferindo
+            manualmente quais sessões o paciente fez, quais pacotes
+            fechou, o que está em aberto. E não consigo calcular
+            quanto tempo administrativo estou gastando."
+          </p>
+          <cite>Psicólogo clínico, 22 anos de prática</cite>
+        </div>
+      </div>
+      <div class="problem-list reveal">
+        <div class="problem-item">
+          <div class="problem-item-num">Dor 01</div>
+          <h4>Módulos que não se conversam</h4>
+          <p>Cancelar um pacote de sessão não reflete no financeiro. Você descobre o erro no fim do mês.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-item-num">Dor 02</div>
+          <h4>Tempo administrativo invisível</h4>
+          <p>O tempo gasto em gestão não aparece no valor-hora, mas existe e custa. Você trabalha mais do que atende.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-item-num">Dor 03</div>
+          <h4>Agenda por mensagem</h4>
+          <p>Cada agendamento e confirmação é uma troca no WhatsApp. Horas por semana em operação que deveria ser automática.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-item-num">Dor 04</div>
+          <h4>Dados presos na ferramenta</h4>
+          <p>Mudar de sistema significa perder histórico. Seus dados clínicos e financeiros ficam reféns da plataforma que você usa.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars" id="pilares">
+  <div class="shell">
+    <div class="pillars-header">
+      <p class="eyebrow eyebrow--blue reveal">A solução</p>
+      <h2 class="section-title section-title--white reveal" style="max-width:520px;">
+        Três pilares. Uma clínica que funciona.
+      </h2>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar reveal">
+        <div class="pillar-num">01</div>
+        <h3>Agenda com autoagendamento</h3>
+        <p>
+          O paciente escolhe o horário disponível sem você precisar
+          responder nenhuma mensagem. Cancela? O horário abre automaticamente.
+        </p>
+        <span class="pillar-tag">Sem WhatsApp de confirmação</span>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-num">02</div>
+        <h3>Financeiro integrado à agenda</h3>
+        <p>
+          Sessão realizada já reflete no saldo do pacote. Tudo em um lugar
+          que entende a lógica do consultório, não de uma loja.
+        </p>
+        <span class="pillar-tag">Sem reconciliação manual</span>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-num">03</div>
+        <h3>Seus dados, sempre seus</h3>
+        <p>
+          Exportação completa a qualquer momento. Sem dependência de
+          plataforma, sem perda de histórico se você decidir sair.
+        </p>
+        <span class="pillar-tag">Portabilidade garantida</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT PREVIEW -->
+<section class="preview" id="produto">
+  <div class="shell">
+    <div class="preview-intro">
+      <p class="eyebrow eyebrow--light reveal">O produto</p>
+      <h2 class="section-title section-title--ink reveal">
+        Simples de usar. Integrado de verdade.
+      </h2>
+      <p class="section-lead section-lead--muted reveal">
+        Uma tela para agenda e financeiro. Nada de copiar e colar entre ferramentas
+        no fim do mês.
+      </p>
+    </div>
+    <div class="browser-frame reveal">
+      <div class="browser-bar">
+        <div class="browser-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="browser-url">bussola.app/agenda</div>
+      </div>
+      <div class="browser-body">
+        <div class="app-sidebar">
+          <div class="sidebar-brand">Bússola</div>
+          <div class="sidebar-item active">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="1" y="2" width="12" height="11" rx="1.5"/><path d="M1 5.5h12M4.5 2V1M9.5 2V1"/></svg>
+            Agenda
+          </div>
+          <div class="sidebar-item">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3l2 1.5"/></svg>
+            Sessões
+          </div>
+          <div class="sidebar-item">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="1.5" y="3" width="11" height="8.5" rx="1"/><path d="M4 3V2M10 3V2M1.5 6h11"/></svg>
+            Financeiro
+          </div>
+          <div class="sidebar-item">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 4h10M2 7h7M2 10h5"/></svg>
+            Relatórios
+          </div>
+        </div>
+        <div class="app-main">
+          <div class="app-header">
+            <span class="app-title">Semana de 04 a 08 de agosto</span>
+            <span class="app-week">↑ ↓ Navegar</span>
+          </div>
+          <div class="week-grid">
+            <div class="week-cell week-time"></div>
+            <div class="week-cell week-day-header">Seg</div>
+            <div class="week-cell week-day-header">Ter</div>
+            <div class="week-cell week-day-header">Qua</div>
+            <div class="week-cell week-day-header">Qui</div>
+            <div class="week-cell week-day-header">Sex</div>
+
+            <div class="week-cell week-time">08:00</div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Ana C.</span><span class="slot-type">60 min</span></div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Pedro M.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+
+            <div class="week-cell week-time">09:00</div>
+            <div class="week-cell slot confirmed"><span class="slot-name">João T.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Laura S.</span><span class="slot-type">60 min</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Renata F.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">João T.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Ana C.</span><span class="slot-type">60 min</span></div>
+
+            <div class="week-cell week-time">10:00</div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Carlos B.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Laura S.</span><span class="slot-type">60 min</span></div>
+
+            <div class="week-cell week-time">14:00</div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Renata F.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Carlos B.</span><span class="slot-type">50 min</span></div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+            <div class="week-cell slot confirmed"><span class="slot-name">Laura S.</span><span class="slot-type">60 min</span></div>
+            <div class="week-cell slot available"><span class="slot-type">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="funcionalidades">
+  <div class="shell">
+    <div class="features-grid">
+      <div class="features-sticky">
+        <p class="eyebrow eyebrow--light reveal">Funcionalidades</p>
+        <h2 class="section-title section-title--ink reveal">
+          Cada item resolve uma dor real de quem atende todo dia.
+        </h2>
+        <p class="section-lead section-lead--muted reveal">
+          Sem features que ficam bonitas no catálogo mas nunca são usadas.
+        </p>
+        <a class="btn btn-brand reveal" href="#lista-espera">
+          Quero acesso antecipado
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="feature-list reveal">
+        <div class="feature-item">
+          <h4>Autoagendamento e reagendamento</h4>
+          <p>
+            O paciente acessa um link e escolhe o horário disponível sem nenhuma
+            mensagem sua. Cancela? O horário volta para a agenda automaticamente.
+          </p>
+        </div>
+        <div class="feature-item">
+          <h4>Pacotes de sessões com controle de saldo</h4>
+          <p>
+            Crie pacotes de 10, 12 ou quantas sessões quiser. O sistema debita
+            automaticamente a cada sessão realizada. Você sabe o saldo de cada
+            paciente sem precisar calcular.
+          </p>
+        </div>
+        <div class="feature-item">
+          <h4>Financeiro integrado à agenda</h4>
+          <p>
+            Sessão cancelada dentro do prazo? O saldo é devolvido automaticamente.
+            Sessão faltante? O sistema trata conforme a política que você configurou.
+            Sem trabalho manual no fim do mês.
+          </p>
+        </div>
+        <div class="feature-item">
+          <h4>Exportação completa de dados</h4>
+          <p>
+            Seus dados são seus. Exporte histórico de sessões, transações e agenda
+            a qualquer momento, em formato aberto. Sem dependência de plataforma.
+          </p>
+        </div>
+        <div class="feature-item">
+          <h4>Histórico de alterações</h4>
+          <p>
+            Toda modificação fica registrada: o que mudou, quando e de qual estado
+            para qual. Você tem rastreabilidade completa da sua operação.
+          </p>
+        </div>
+        <div class="feature-item">
+          <h4>
+            Linha do tempo do paciente
+            <span class="feature-badge">Em breve</span>
+          </h4>
+          <p>
+            Para quem atende pacientes há anos: visualização cronológica de todos
+            os marcos do tratamento sem navegar por centenas de registros.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DADOS -->
+<section class="dados" id="dados">
+  <div class="shell dados-inner">
+    <div class="dados-header">
+      <p class="eyebrow eyebrow--dark reveal">Seus dados</p>
+      <h2 class="section-title section-title--dark reveal">
+        Seus dados clínicos são seus. Sempre.
+      </h2>
+      <p class="section-lead section-lead--dark reveal">
+        A Bússola é construída com privacidade como decisão de projeto,
+        não como funcionalidade adicionada depois.
+      </p>
+    </div>
+    <div class="dados-grid reveal">
+      <div class="dados-item">
+        <h4>Dados no Brasil</h4>
+        <p>
+          Toda a infraestrutura opera em servidores localizados no Brasil,
+          em conformidade com os requisitos de residência de dados da LGPD.
+        </p>
+      </div>
+      <div class="dados-item">
+        <h4>Portabilidade garantida</h4>
+        <p>
+          Exportação completa a qualquer momento, em formato aberto.
+          Sem bloqueio de dados, sem perda de histórico ao migrar.
+        </p>
+      </div>
+      <div class="dados-item">
+        <h4>Acesso verificado</h4>
+        <p>
+          O acesso à plataforma é condicionado a CRP verificado.
+          Não é campo autodeclarado.
+        </p>
+      </div>
+      <div class="dados-item">
+        <h4>Histórico rastreável</h4>
+        <p>
+          Toda alteração nos dados da conta é registrada com timestamp.
+          Você sabe o que mudou, quando e por quem.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="lista-espera">
+  <div class="shell">
+    <div class="cta-box">
+      <p class="eyebrow eyebrow--light eyebrow--center reveal">Acesso antecipado</p>
+      <h2 class="section-title section-title--ink reveal">
+        Seja um dos primeiros psicólogos<br>a usar a Bússola.
+      </h2>
+      <p class="section-lead section-lead--muted reveal">
+        O produto está em desenvolvimento. Entre na lista e seja avisado
+        quando as primeiras vagas abrirem para testes.
+      </p>
+      <a class="btn btn-brand reveal" href="mailto:contato@bussolaapp.com.br">
+        Entrar na lista de espera
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="shell footer-inner">
+    <span class="footer-wordmark">Bússola</span>
+    <span class="footer-note">Gestão clínica para psicólogos · Brasil · © 2026</span>
+  </div>
+</footer>
+
+<script>
+const nav  = document.getElementById('main-nav');
+const hero = document.querySelector('.hero');
+
+function syncNav() {
+  const heroBottom = hero.getBoundingClientRect().bottom;
+  if (heroBottom <= 0) {
+    nav.classList.replace('is-dark', 'is-light');
+  } else {
+    nav.classList.replace('is-light', 'is-dark');
+  }
+}
+window.addEventListener('scroll', syncNav, { passive: true });
+syncNav();
+
+const revEls = document.querySelectorAll('.reveal');
+function revealAll() { revEls.forEach(e => e.classList.add('in')); }
+
+try {
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: .08 });
+    revEls.forEach(e => io.observe(e));
+  } else { revealAll(); }
+} catch(err) { revealAll(); }
+setTimeout(revealAll, 2000);
+</script>
+</body>
+</html>
