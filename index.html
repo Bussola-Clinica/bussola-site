@@ -708,6 +708,9 @@ footer { background: var(--navy); padding-block: 32px; }
 }
 .footer-wordmark { font-family: var(--serif); font-size: 15px; color: rgba(248,247,244,.6); }
 .footer-note { font-size: 12px; color: rgba(248,247,244,.3); }
+.footer-meta { display: flex; align-items: center; gap: 14px; }
+.footer-social { display: inline-flex; color: rgba(248,247,244,.45); transition: color .15s; }
+.footer-social:hover, .footer-social:focus-visible { color: var(--sage-light); }
 
 /* ─── Reveal ───────────────────────────────────────────── */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s ease; }
@@ -715,6 +718,102 @@ footer { background: var(--navy); padding-block: 32px; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ─── Planos ───────────────────────────────────────────── */
+.planos { background: var(--bg-soft); }
+.planos-intro { max-width: 600px; }
+
+.planos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 3vw, 40px);
+  margin-top: 48px;
+}
+
+.plano {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 28px 24px;
+}
+.plano.destaque {
+  border-color: rgba(90,138,82,.45);
+  box-shadow: 0 4px 32px rgba(27,42,74,.08);
+}
+/* reserva a altura da etiqueta nos cards sem destaque */
+.plano:not(.destaque)::before { content: ''; display: block; height: 24px; margin-bottom: 16px; }
+
+.plano-badge {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--sage);
+  background: var(--sage-bg);
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(90,138,82,.2);
+  margin-bottom: 16px;
+}
+
+.plano-nome {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  color: var(--navy);
+}
+.plano-desc { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-top: 8px; min-height: calc(1.6em * 3); }
+
+.plano-preco {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--navy);
+  margin-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.plano-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  flex: 1;
+}
+.plano-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14.5px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.plano-cta {
+  display: block;
+  margin-top: 24px;
+  padding: 13px 20px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--navy);
+  border: 1.5px solid var(--line);
+  border-radius: 4px;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.plano-cta:hover, .plano-cta:focus-visible { border-color: var(--sage); color: var(--sage); }
+.plano-cta.solido { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.plano-cta.solido:hover, .plano-cta.solido:focus-visible { background: var(--navy-light); border-color: var(--navy-light); color: var(--white); }
+
+.planos-nota { margin-top: 28px; font-size: 13px; color: var(--muted); text-align: center; }
 
 /* ─── Responsivo ───────────────────────────────────────── */
 @media (max-width: 720px) {
@@ -729,7 +828,11 @@ footer { background: var(--navy); padding-block: 32px; }
   .comp-header-cell, .comp-cell { padding: 12px 14px; font-size: 13px; }
   .modulo { grid-template-columns: 1fr; gap: 10px; }
   .para-quem-grid { grid-template-columns: 1fr; }
+  .planos-grid { grid-template-columns: 1fr; }
+  .plano:not(.destaque)::before { display: none; }
+  .plano-desc { min-height: 0; }
   .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+  .footer-meta { flex-wrap: wrap; justify-content: center; }
   .week-day { font-size: 9px; }
 }
 </style>
@@ -758,6 +861,7 @@ footer { background: var(--navy); padding-block: 32px; }
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#produto">Produto</a></li>
       <li><a href="#para-quem">Para quem</a></li>
+      <li><a href="#planos">Planos</a></li>
     </ul>
     <a class="nav-contact" href="#contato">Entrar em contato</a>
   </div>
@@ -1237,6 +1341,65 @@ footer { background: var(--navy); padding-block: 32px; }
   </div>
 </section>
 
+<!-- PLANOS -->
+<section class="planos section" id="planos">
+  <div class="container-wide">
+    <div class="planos-intro">
+      <span class="section-label reveal">Planos</span>
+      <h2 class="reveal">Um plano para cada momento da prática.</h2>
+      <div class="prose reveal">
+        <p>
+          Três configurações, conforme o tamanho da carteira e o grau de
+          integração que a operação do consultório exige.
+        </p>
+      </div>
+    </div>
+
+    <div class="planos-grid">
+      <div class="plano reveal">
+        <div class="plano-nome">Starter</div>
+        <p class="plano-desc">Para quem está organizando a prática pela primeira vez.</p>
+        <div class="plano-preco">A definir</div>
+        <ul class="plano-features">
+          <li><div class="comp-icon check">✓</div>Agenda com autoagendamento</li>
+          <li><div class="comp-icon check">✓</div>Financeiro básico (sessões avulsas)</li>
+          <li><div class="comp-icon check">✓</div>Exportação completa de dados</li>
+        </ul>
+        <a class="plano-cta" href="#contato">Solicitar acesso antecipado</a>
+      </div>
+
+      <div class="plano destaque reveal">
+        <span class="plano-badge">Mais popular</span>
+        <div class="plano-nome">Profissional</div>
+        <p class="plano-desc">Para a prática já consolidada, com pacotes de sessão.</p>
+        <div class="plano-preco">A definir</div>
+        <ul class="plano-features">
+          <li><div class="comp-icon check">✓</div>Tudo do Starter</li>
+          <li><div class="comp-icon check">✓</div>Pacotes de sessão com controle de saldo</li>
+          <li><div class="comp-icon check">✓</div>Relatório financeiro mensal automático</li>
+          <li><div class="comp-icon check">✓</div>Histórico e rastreabilidade completos</li>
+        </ul>
+        <a class="plano-cta solido" href="#contato">Solicitar acesso antecipado</a>
+      </div>
+
+      <div class="plano reveal">
+        <div class="plano-nome">Premium</div>
+        <p class="plano-desc">Para quem quer o produto sempre à frente.</p>
+        <div class="plano-preco">A definir</div>
+        <ul class="plano-features">
+          <li><div class="comp-icon check">✓</div>Tudo do Profissional</li>
+          <li><div class="comp-icon check">✓</div>Acesso antecipado ao Prontuário eletrônico estruturado</li>
+          <li><div class="comp-icon check">✓</div>Acesso antecipado à Linha do tempo do paciente</li>
+          <li><div class="comp-icon check">✓</div>Suporte prioritário</li>
+        </ul>
+        <a class="plano-cta" href="#contato">Solicitar acesso antecipado</a>
+      </div>
+    </div>
+
+    <p class="planos-nota reveal">Valores em definição — atualizaremos antes do lançamento.</p>
+  </div>
+</section>
+
 <!-- LISTA DE ESPERA -->
 <section class="lista-espera" id="contato">
   <div class="container">
@@ -1288,7 +1451,20 @@ footer { background: var(--navy); padding-block: 32px; }
       </svg>
       <span class="wordmark-text" style="color:rgba(248,247,244,.65);">Bússola</span>
     </a>
-    <span class="footer-note">Gestão clínica para psicólogos · Brasil · © 2026</span>
+    <div class="footer-meta">
+      <span class="footer-note">Gestão clínica para psicólogos · Brasil · © 2026</span>
+      <a class="footer-social"
+         href="https://www.linkedin.com/in/sidinei-manthey-0aa35628"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="LinkedIn de Sidnei Manthey">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="13" height="13" rx="2.5"/>
+          <circle cx="5" cy="5.2" r=".55" fill="currentColor" stroke="none"/>
+          <path d="M5 7.3v4.2"/>
+          <path d="M8.2 11.5V7.3M8.2 9.3c0-1.1.8-2 1.9-2s1.7.8 1.7 1.9v2.3"/>
+        </svg>
+      </a>
+    </div>
   </div>
 </footer>
 
